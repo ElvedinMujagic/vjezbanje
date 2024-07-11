@@ -20,7 +20,7 @@ grid on;
 xlabel('n'),ylabel('odziv na def. pobudu y1(n)');
 subplot(313), stem(n,x1);
 
-ZADATAK 2
+ZADATAK 2 - Konvolucija signala
 
 h1=[2 0 4 -1];
 impuls=[2 -1];
@@ -62,7 +62,7 @@ nhrez4=0:Nhrez4-1;
 subplot(235), stem(nhrez3,hrez3), title('impulsni odziv na izlazu kaskade - paralelna');
 subplot(236),stem(nhrez4,hrez4), title('impulsni odziv na izlazu kaskade veze dobijen na osnovu h[n]=h1[n]+h1[n]');
 
-ZADATAK 3
+ZADATAK 3 - Kauzalni sistem je zadat
 
 % a) naci funkciju sistema H(z)
 
@@ -369,7 +369,7 @@ plot(omega,Xtfaz,'r:','linewidth',3);
 title('Fazni spektar trougaonog i pravougaonog impulsa');
 legend('Pravougaoni impuls','Trougaoni impuls');
 
-ZADATAK 8 
+ZADATAK 8 Sinusni Signal Slika. Oppisati pomjerenim jedinicnim impulsom.Napisati izraz i matlab
 clear all
 close all
 x=[0.1 0.3 0.5 0.7 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.7 0.5 0.3 0.1 -0.1 -0.3
@@ -429,7 +429,7 @@ subplot(414)
 stem(ny1,y1)
 title('Konvolucija sa for petljom')
 
-ZADATAK 10 - Izvršiti spektralnu analizu
+ZADATAK 10 - Izvršiti spektralnu analizu diskretnog signala
 N=32;
 %beta se racuna na osnovu izraza
 beta=0.76609*(33-13.65).^0.4+0.09834*(33-13.26);
