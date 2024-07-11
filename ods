@@ -1,0 +1,841 @@
+ZADATAK 1 - Odrediti impulsni odziv nelinearnog vremenski invarijantnog sistema
+
+L=15; % sekvenca niza
+n=(0:L-1); % vremenska osa
+x=zeros(L,1); % ulazni odziv (jed. impuls)
+x(1)=1; % prva pobuda sistema
+x1=[0 3 -5 10 -15 20 -25 36 -40 35 -23 18 -5 3 0]; % druga pobuda sistema
+y(1,1)=x(1); % odziv prve pobude
+y1(1,1)=x1(1); % odziv druge pobude
+for br=2:length(x) % for petlja
+y(br,1)=3x(br)^3+2x(br-1)^2+1;
+y1(br,1)=3x1(br)^3+2x1(br-1)^2+1;
+end;
+
+subplot(311),stem(n,y);
+grid on;
+xlabel('n'), ylabel('impulsni odziv y(n)');
+subplot(312),stem(n,y1);
+grid on;
+xlabel('n'),ylabel('odziv na def. pobudu y1(n)');
+subplot(313), stem(n,x1);
+
+ZADATAK 2
+
+h1=[2 0 4 -1];
+impuls=[2 -1];
+pom=conv(h1,impuls);
+hrez1=conv(pom,h1);
+
+hrez2=conv(h1,h1);
+
+Nh1=length(h1);
+Nhrez1=length(hrez1);
+Nhrez2=length(hrez2);
+
+Nimpuls=length(impuls);
+Npom=length(pom);
+
+nh1=0:Nh1-1;
+
+nhrez1=0:Nhrez1-1;
+nhrez2=0:Nhrez2-1;
+nimpuls=0:Nimpuls-1;
+
+subplot(231),stem(nh1,h1), title('impulsni odziv');
+subplot(232),stem(nimpuls,impuls), title('pobuda');
+subplot(233),stem(nhrez1,hrez1), title('impulsni odziv na izlazu kaskade - serijska');
+subplot(234),stem(nhrez2,hrez2), title('impulsni odziv na izlazu kaskade veze dobijen na osnovu h[n]=h1[n]*h1[n]');
+
+pom1=conv(h1,impuls);
+pom2=conv(h1,impuls);
+hrez3=pom1+pom2;
+h=h1+h1;
+hrez4=conv(impuls,h);
+
+Nhrez3=length(hrez3);
+Nhrez4=length(hrez4);
+
+nhrez3=0:Nhrez3-1;
+nhrez4=0:Nhrez4-1;
+
+subplot(235), stem(nhrez3,hrez3), title('impulsni odziv na izlazu kaskade - paralelna');
+subplot(236),stem(nhrez4,hrez4), title('impulsni odziv na izlazu kaskade veze dobijen na osnovu h[n]=h1[n]+h1[n]');
+
+ZADATAK 3
+
+% a) naci funkciju sistema H(z)
+
+% Dana diferencijalna jednadžba sistema je:
+% y(n)+6y(n−1)+3y(n−2)−10y(n−3)=x(n−1)+2x(n−2)+7x(n−3)
+
+% Prebacimo sve članove na lijevu stranu:
+% y(n)+6y(n−1)+3y(n−2)−10y(n−3)−x(n−1)−2x(n−2)−7x(n−3)=0
+
+% Ova jednadžba opisuje vezu između izlaznog signala y(n) i ulaznog signala x(n)
+
+% Funkcija prijenosa H(z) je definirana kao omjer Laplaceove transformacije izlaznog signala Y(z) i ulaznog signala X(z), uz pretpostavku početnih uvjeta nula (jer je sistem kauzalan):
+% H(z)=Y(z)/X(z)
+
+% Za računanje H(z), prenesimo diferencijalnu jednadžbu u domenu z:
+% Y(z)+6z^-1Y(z)+3z^−2Y(z)−10z^−3Y(z)=X(z)z^−1+2X(z)z^−2+7X(z)z^−3
+% Y(z)(1+6z^−1+3z^−2−10z^−3)=X(z)z^−1+2X(z)z^−2+7X(z)z^−3
+% Y(z)(1+6z^−1+3z^−2−10z^−3)=X(z)(z^−1+2z^−2+7z^−3)
+
+% H(z)=Y(z)/X(z)=z^−1+2z^−2+7z^−3 / 1+6z^−1+3z^−2−10z^−3
+
+—————————————————————————————————————————
+
+% Koeficijenti numeratora i denominatora H(z)
+num = [0 1 2 7 ];
+den = [1 6 3 -10 ];
+
+% Pronalazak impulsnog odziva
+impulsni_odziv = impz(num, den);
+
+% Prikaz impulsnog odziva
+n = 0:length(impulsni_odziv)-1;
+stem(n, impulsni_odziv);
+title('Impulsni odziv h(n)');
+xlabel('n');
+ylabel('h(n)');
+grid on;
+
+ZADATAK 4 - Za signale prikazane na Sl. 1 u Matlab-u odrediti i nacrtati njihovu konvoluciju
+%a) teorema o duzinama
+x1 = [0 0.1 3 -1.8 0 1.8 -3 -0.1];
+x2 = [2 -1 1 3 -3 1 2 0];
+k = conv(x1,x2);
+nk = 0:length(k)-1;
+n1 = 0:length(x1)-1;
+n2 = 0: length(x2)-1;
+subplot(411);
+stem(n1,x1);
+title('signal x')
+grid on;
+subplot(412);
+stem(n2,x2);
+title('signal y')
+grid on;
+
+ZADATAK 5 - Izračunati konvoluciju signala
+%% DRUGI ZADATAK FOR PETLJA I FILTER
+h=[2 0 4 -1 zeros(1,10)];
+u=[2 -1 zeros(1,10)];
+%SERIJSKA VEZA
+pom=conv(u,h);
+serijska=conv(pom,h)
+%PARALELNA VEZA
+pom1=conv(u,h);
+pom2=conv(u,h);
+paralelna=pom1+pom2
+% metoda filter serijska veza
+a1=[1];
+b1=serijska;
+konv1=filter(b1,a1,u);
+% metoda filter paralelna veza
+a2=[1];
+b2=paralelna;
+konv2=filter(b2,a2,u);
+subplot(413);
+stem(nk,k);
+title('Konvolucija');
+grid on;
+% b) fft
+% 1 KORAK
+x11 = [x1, zeros(1,length(k)-length(x1))];
+x22 = [x2, zeros(1,length(k)-length(x2))];
+%2 KORAK
+X = fft(x11);
+Y = fft(x22);
+% 3 KORAK
+Z = X.*Y;
+%4 KORAK
+Z1 = ifft(Z);
+%5 KORAK
+Z2 = real(Z1);
+subplot(414);
+stem(nk,Z2);
+title('Konvolucija putem fft-a');
+grid on;
+
+% vidimo u workspaceu da je serijska =[ 8 -4 32 -24 36
+-32 10 -1 ]
+%serijska sa for petljom
+% y =
+8*(x)-4*(x-1)+32*(x-2)-24*(x-3)+36*(x-4)-32*(x-5)+10*(x-6)-1*(x-7);
+for i=1:length(u)
+if(i==1)
+konv3(i)=8u(i);
+end
+if(i==2)
+konv3(i)=8u(i)-4u(i-1);
+end
+if(i==3)
+konv3(i)=8u(i)-4u(i-1)+32u(i-2);
+end
+if(i==4)
+konv3(i)=8u(i)-4u(i-1)+32u(i-2)-24u(i-3);
+end
+if(i==5)
+konv3(i)=8u(i)-4u(i-1)+32u(i-2)-24u(i-3)+36u(i-4);
+end
+if(i==6)
+konv3(i)=8u(i)-4u(i-1)+32u(i-2)-24u(i-3)+36u(i-4)-32u(i-5);
+end
+if(i==7)
+konv3(i)=8u(i)-4u(i-1)+32u(i-2)-24u(i-3)+36u(i-4)-32u(i-5)+10u(i
+-6);
+end
+if(i>7)
+end
+end
+%paralelna = 8 -4 16 -12 2
+% y = 8(x)-4(x-1)+16(x-2)-12(x-3)+2(x-4)
+for i=1:length(u)
+if(i ==1)
+konv4(i)=8u(i)
+end
+if(i==2)
+konv4(i)=8u(i)-4u(i-1)
+end
+if(i==3)
+konv4(i)=8u(i)-4u(i-1)+16u(i-2);
+end
+if(i==4)
+konv4(i)=8u(i)-4u(i-1)+16u(i-2)-12u(i-3);
+end
+if(i>4)
+konv4(i)=8u(i)-4u(i-1)+16u(i-2)-12u(i-3)+2*u(i-4);
+end
+end
+% vremenske ose
+nserijska=0:length(serijska)-1;
+nparalelna=0:length(paralelna)-1;
+nkonv1=0:length(konv1)-1;
+nkonv2=0:length(konv2)-1;
+nkonv3=0:length(konv3)-1;
+nkonv4=0:length(konv4)-1;
+% iscrtavanje
+subplot(321)
+stem(nserijska,serijska);
+title('Serijska veza')
+subplot(322)
+stem(nparalelna,paralelna);
+title('Paralelna veza')
+subplot(323);
+stem(nkonv1,konv1);
+title('Konvolucija serijske filterom');
+subplot(324);
+stem(nkonv2,konv2);
+title('Konvolucija paralelne filterom');
+subplot(325);
+stem(nkonv3,konv3);
+title('Konvolucija serijske petljom');
+subplot(326);
+stem(nkonv4,konv4);
+title('Konvolucija paralelne petljom');
+
+ZADATAK 6 - Izračunati konvoluciju signala
+h1=[3/2 3/4 3/8 0];
+h2=[1 1/3 1/8 1/15];
+impuls=[1 zeros(1,10)];
+h=conv(h1,h2)
+nh=0:length(h)-1;
+%SERIJSKA VEZA
+pom=conv(impuls,h1);
+hrez1=conv(pom,h2)
+%prvo filter metoda
+a1=[1];
+b1=hrez1;
+hrez2=filter(b1,a1,impuls);
+% vidimo u workspaceu da je serijska hrez1=[1.5 1.25 0.8125 0.3187 0.0969
+0.0250], a paralelna
+% hrez4=[2.5 1.0833 0.5 0.0667]
+%for petlja SERIJSKA VEZA
+% y = 1.5*(x)+1.25*(x-1)+0.8125*(x-2)+0.3187*(x-3)+0.0969*(x-4)+0.0250*(x-5);
+%posto y ide do (x-5) i for petlju pisemo do 5 tj do i vece od 5(vidjet ces o
+cemu govorim)
+for i=1:length(impuls)
+if(i==1)
+hrez3(i)=1.5impuls(i);
+end
+if(i==2)
+hrez3(i)=1.5impuls(i)+1.25impuls(i-1);
+end
+if(i==3)
+hrez3(i)=1.5impuls(i)+1.25impuls(i-1)+0.8125impuls(i-2);
+end
+if(i==4)
+hrez3(i)=1.5impuls(i)
++1.25impuls(i-1)+0.8125impuls(i-2)+0.3187impuls(i-3);
+end
+if(i==5)
+hrez3(i)=1.5impuls(i)
++1.25impuls(i-1)+0.8125impuls(i-2)+0.3187impuls(i-3)+0.0969impuls(i-4);
+end
+if(i>5)
+hrez3(i)=1.5impuls(i)
++1.25impuls(i-1)+0.8125impuls(i-2)+0.3187impuls(i-3)+0.0969impuls(i-4)+0.0
+250impuls(i-5);
+end
+end
+%PARALELNA VEZA
+%kod h1 samo dodala 0 da budu iste duzine inace nece da radi
+pom1=conv(impuls,h1);
+pom2=conv(impuls,h2);
+hrez4=pom1+pom2
+%filter metoda
+a1=[1];
+b1=hrez4;
+hrez5=filter(b1,a1,impuls);
+%for petlja PARALELNA VEZA
+%%paralelna hrez4=[2.5 1.0833 0.5 0.0667]
+% y = 2.5(x)+1.0833(x-1)+0.5(x-2)+0.0667(x-3)
+for i=1:length(impuls)
+if(i==1)
+hrez6(i)=2.5impuls(i);
+end
+if(i==2)
+hrez6(i)=2.5impuls(i)+1.0833impuls(i-1);
+end
+if(i==3)
+hrez6(i)=2.5impuls(i)+1.0833impuls(i-1)+0.5impuls(i-2);
+end
+if(i>3)
+hrez6(i)=2.5impuls(i)
++1.0833impuls(i-1)+0.5impuls(i-2)+0.0667*impuls(i-3);
+end
+end
+nhrez1=0:length(hrez1)-1;
+nhrez2=0:length(hrez2)-1;
+nhrez3=0:length(hrez3)-1;
+nhrez4=0:length(hrez4)-1;
+nhrez5=0:length(hrez5)-1;
+nhrez6=0:length(hrez6)-1;
+subplot(321)
+stem(nhrez1,hrez1)
+title('Serijska veza')
+subplot(322)
+stem(nhrez2,hrez2)
+title('Metoda filter-serijska')
+axis([0 20 0 1.5])
+subplot(323)
+stem(nhrez3,hrez3)
+title('for petlja-serijska')
+subplot(324)
+stem(nhrez4,hrez4)
+title('Paralelna veza')
+subplot(325)
+stem(nhrez5,hrez5)
+title('Metoda filter-paralelna')
+subplot(326)
+stem(nhrez6,hrez6)
+title('for petlja-paralelna')
+
+ZADATAK 7 - Za M = 30 prikazati pravougoni i trougoni impuls
+clear all
+close all
+M=30;
+u=[zeros(1,M) ones(1,M)]; %pravougaoni impuls
+nu=0:length(u)-1;
+subplot(411)
+stem(nu,u)
+title('Pravougaoni impuls')
+k=conv(u,u); %trougaoni kao konv 2 pravougaona
+n=0:length(k)-1;
+subplot(412);
+stem(n,k);
+title('Trougaoni impuls’);
+omega=-pi:0.01:pi;
+xp=sin(omegaM/2)./sin(omega/2).(exp(-jomega(M-1)/2));
+xt=xp.*xp;
+Xpamp=abs(xp);
+Xtamp=abs(xt);
+subplot(413);
+plot(omega,Xpamp,'k','linewidth',3);
+hold on
+plot(omega,Xtamp,'r:','linewidth',3);
+title('Amplitudni spektar trougaonog i pravougaonog impulsa');
+legend('Pravougaoni impuls','Trougaoni impuls');
+Xpfaz=angle(xp);
+Xtfaz=angle(xt)
+Xpamp=abs(xp);
+Xtamp=abs(xt);
+subplot(414);
+plot(omega,Xpfaz,'k','linewidth',3);
+hold on
+plot(omega,Xtfaz,'r:','linewidth',3);
+title('Fazni spektar trougaonog i pravougaonog impulsa');
+legend('Pravougaoni impuls','Trougaoni impuls');
+
+ZADATAK 8 
+clear all
+close all
+x=[0.1 0.3 0.5 0.7 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.7 0.5 0.3 0.1 -0.1 -0.3
+-0.5 -0.7 -0.9 -0.9 -0.9 -0.9 -0.9 -0.9 -0.9 -0.7 -0.5 -0.3 -0.1 0.1];
+n=[0 0.2 0.4 0.6 0.8 1 1.2 1.4 1.6 1.8 2 2.2 2.4 2.6 2.8 3 3.2 3.4 3.6 3.8 4
+4.2 4.4 4.6 4.8 5 5.2 5.4 5.6 5.8 6];
+stairs(n,x);
+hold on
+plot(n, sin(n));
+hold on
+axis tight
+
+ZADATAK 9 - Za sistem prikazan jednačinom
+n=0:7;
+%jedinicni impuls
+impuls=zeros(size(n))
+impuls(1)=1;
+%a)
+a=[1];
+b=[2 0 1];
+h=filter(b,a,impuls); %h impulsni odziv
+Nh=length(h);
+nh=0:Nh-1;
+%b)
+x=[1 2 3 0 5 4];
+Nx=length(x); %ulazni signal
+y=filter(b,a,x); %izlazni signal
+ny=0:length(y)-1;
+Ny1=Nx+Nh-1;
+%konvoluciju na osnovu furijera
+h2=[h zeros(1, Ny1-Nh)];
+x2=[x zeros(1, Ny1-Nx)];
+X=fft(x2);
+H=fft(h2);
+Z=X.H;
+z=ifft(Z);
+z1=real(z); %ovo se iscrtava samo real
+nz1=0:length(z1)-1;
+%konvoluciju sa for petljom
+y1=conv(h,x)
+y1(1,1)=x(1);
+for br=3:length(x)
+y1(br)=2x(br)+x(br-2);
+end
+ny1=0:length(y1)-1;
+%iscrtati ovo sve
+subplot(411)
+stem(nh,h)
+title('Impulsni odziv');
+subplot(412)
+stem(ny,y);
+title('Izlaz iz sistema nakon ulaznog signala x')
+subplot(413)
+stem(nz1,z1)
+title('Konvolucija na osnovu Furijerove transformacije')
+subplot(414)
+stem(ny1,y1)
+title('Konvolucija sa for petljom')
+
+ZADATAK 10 - Izvršiti spektralnu analizu
+N=32;
+%beta se racuna na osnovu izraza
+beta=0.76609*(33-13.65).^0.4+0.09834*(33-13.26);
+n=0:N-1;
+x=cos((2pin)/14)+0.75cos((4pi*n)/15)
+w=kaiser(N,beta)';
+y=x.w;
+Y=2abs(fft(y))/N;
+stem(n,Y);
+title('Kajzerova prozorska funkcija N=32');
+
+ZADATAK 11 - Jedan digitalni filter je opisan sljedećom funkcijom prijenosa
+% tacka a)
+b=0.067569*[1 2 1];
+a=[1 -1.1421 0.4142];
+impuls=[1 zeros(1,49)];
+h=filter(b,a,impuls);
+subplot(3,2,[1:2]);
+stem(h), title('Impulsni odziv filtra');
+% tacka b)
+N=128;
+b=0.067569*[1 2 1];
+a=[1 -1.1421 0.4142];
+F1=500; F2=750; F3=3000; Fs=5000;
+n=(0:N-1);
+f1=F1/Fs; f2=F2/Fs; f3=F3/Fs;
+x=cos(2pif1n)+cos(2pif2n)+cos(2pif3*n);
+subplot(323);
+plot(n,x),title('Signal na ulazu u filter'),axis([0 N -2.1 2.1]);
+subplot(324);
+y=filter(b,a,x);
+plot(n,y),title('Signal na izlazu filtra'),axis([0 N -2.1 2.1]);
+% tacka c)
+X=abs(fft(x,256));
+Y=abs(fft(y,256));
+subplot(325); stem(X(1:length(X)/2)),title('Spektar signala x');
+subplot(326); stem(Y(1:length(Y)/2)),title('Spektar signala y');
+
+ZADATAK 11 - Za signale prikazane na Slici 1
+x=[0 1 2 -1]
+y=[0 0 -2 4 0 -4]
+Nx=length(x);
+Ny=length(y);
+%konvolucija na osnovu duzina
+z=conv(x,y);
+Nz=Nx+Ny-1;
+%konvolucija na osnovu fft-a
+x2=[x zeros(1,Nz-Nx)]
+y2=[y zeros(1,Nz-Ny)]
+X=fft(x2);
+Y=fft(y2);
+H=X.*Y;
+h=ifft(H);
+h1=real(h);
+%vremenske ose
+nx=0:Nx-1;
+ny=0:Ny-1;
+nz=0:Nz-1;
+
+Zadatak 12 - Za signal predstavljen na Slici 2 odrediti i nacrtati u Matlabu
+n=0:0.5:3;
+x=[0 1.5 3 3 3 1.5 0];
+b=[0.3 0.6 0.3];
+a=[1 0 0.9];
+%metoda filter
+y=filter(b,a,x);
+ny=0:length(y)-1;
+%koristeci for petlju
+y1(1,1)=x(1);
+for br=3:length(x)
+y1(br,1)=0.3x(br)+0.6x(br-1)+0.3x(br-2)-0.9y1(br-2);
+end
+%iscrtavanje
+subplot(311)
+plot(n,x)
+axis([0 3 0 3])
+grid on
+title('Signal x');
+subplot(312)
+stem(ny,y)
+title('Metoda filter');
+subplot(313)
+stem(n,y1)
+title('For petlja');
+
+ZADATAK 13 - Jedan digitalni filter je opisan sljedećom funkcijom prenosa
+n=-30:30;
+x=n>=0;
+b=0.067569*[-1 0 0 1];
+a=[-1 0 0 0 1];
+y=filter(b,a,x)
+subplot(211)
+stem(n,x)
+subplot(212)
+plot(n,y)
+
+ZADATAK 14 - Za signal predstavljen na slici 1 koristeći metodu filter
+n=0:13;
+x=[0 4 5 4 3 4 6 7 5 3 3 4 4];
+b=[-0.6 0 1.6];
+a=[1 1.3 0 1.05];
+y=filter(b,a,x);
+%koristeci teoremu o duzinama
+Nx=length(x);
+Ny=length(y);
+z=conv(x,y);
+Nz=Nx+Ny-1;
+%koristeci fft
+x2=[x zeros(1,Nz-Nx)];
+y2=[y zeros(1,Nz-Ny)];
+X=fft(x2);
+Y=fft(y2);
+H=X.*Y;
+h=ifft(H);
+h1=real(h);
+%vremenske ose
+nx=0:length(x)-1;
+ny=0:Ny-1;
+nz=0:Nz-1;
+nh1=0:length(h1)-1;
+%iscrtavanje
+subplot(221)
+stairs(nx,x)
+grid on
+title('Signal x')
+subplot(222)
+stem(ny,y)
+title('Filter')
+subplot(223)
+stem(nz,z)
+title('Konvolucija na osnovu duzina')
+subplot(224)
+stem(nh1,h1)
+title('Konvolucija na osnovu fft-a')
+
+ZADATAK 15 - Izvršiti odabiranje kontinualnog signala
+clear all
+close all
+fo = 500;
+To = 1/fo;
+%20 tačaka
+t=0:To:20.To;
+x=cos(2pi100t)+sin(2pi105t);
+subplot(3,1,1);
+stem(t,x);
+xlabel('t');
+ylabel('x(t)');
+title('Funkcija u 20 tačaka');
+%50 tačaka
+t=0:To:50.To;
+x=cos(2pi100t)+sin(2pi105t);
+subplot(3,1,2);
+stem(t,x);
+xlabel('t');
+ylabel('x(t)');
+title('Funkcija u 50 tačaka’);
+%100 tačaka
+t=0:To:100.To;
+x=cos(2pi100t)+sin(2pi105*t);
+subplot(3,1,3);
+stem(t,x);
+xlabel('t');
+ylabel('x(t)');
+title('Funkcija u 100 tačaka');
+
+ZADATAK 16 - Dat je diskretan signal
+clear all
+close all
+A0=1;
+A1=0.75;
+fi=(2pi)/3;
+Fs=10000;
+N=64;
+n=(0:N-1);
+%a)
+aF0=(1/12)10000;
+aF1=(1/3)10000;
+af0=aF0/Fs;
+af1=aF1/Fs;
+ax=A0exp(2piaf0n+fi)+A1exp(2piaf1n-fi);
+aX=fftshift(abs(fft(ax)));
+AX=abs(fft(ax));
+%slucaj b)
+bF0=(2/14)10000;
+bF1=(1/5)10000;
+bf0=bF0/Fs;
+bf1=bF1/Fs;
+bx=A0exp(2pibf0n+fi)+A1exp(2pibf1n-fi);
+bX=fftshift(abs(fft(bx)));
+BX=abs(fft(bx));
+%slucaj c)
+cF0=(3/14)10000;
+cF1=(1/12)10000;
+cf0=cF0/Fs;
+cf1=cF1/Fs;
+cx=A0exp(2picf0n+fi)+A1exp(2picf1*n-fi);
+cX=fftshift(abs(fft(cx)));
+CX=abs(fft(cx));
+subplot(3,2,1);
+stem(n,aX);
+title('Preuređeni spektar a)');
+xlabel('n');
+ylabel('x[n]');
+axis tight;
+subplot(3,2,2);
+stem(AX(1:N/2));
+title('Amplitudni spektar a)');
+xlabel('n');
+ylabel('x[n]');
+axis tight;
+subplot(3,2,3);
+stem(n,bX);
+title('Preuređeni spektar b)');
+xlabel('n');
+ylabel('x[n]');
+axis tight;
+subplot(3,2,4);
+stem(BX(1:N/2));
+title('Amplitudni spektar b)');
+xlabel('n');
+ylabel('x[n]');
+axis tight;
+subplot(3,2,5);
+stem(n,cX);
+title('Preuređeni spektar c)');
+xlabel('n');
+ylabel('x[n]');
+axis tight;
+subplot(3,2,6);
+stem(CX(1:N/2));
+title('Amplitudni spektar c)');
+xlabel('n');
+ylabel('x[n]');
+axis tight;
+
+ZADATAK 17 - Za signale prikazane
+n=0:0.5:3;
+x=[-1 0.5 2 2 2 0.5 -1]
+y=[2 0.5 -1 -1 -1 0.5 2]
+%koristeci teoremu o duzinama
+Nx=length(x);
+Ny=length(y);
+z=conv(x,y);
+Nz=Nx+Ny-1;
+%koristeci fft
+x2=[x zeros(1,Nz-Nx)];
+y2=[y zeros(1,Nz-Ny)];
+X=fft(x2);
+Y=fft(y2);
+H=X.*Y;
+h=ifft(H);
+h1=real(h);
+%vremenske ose
+nz=0:Nz-1;
+nh1=0:length(h1)-1;
+%iscrtavanje
+subplot(221)
+plot(n,x)
+grid on
+title('Signal x')
+subplot(222)
+plot(n,y)
+grid on
+title('Signal y')
+subplot(223)
+stem(nz,z)
+title('Konvolucija na osnovu duzina')
+subplot(224)
+stem(nh1,h1)
+title('Konvolucija na osnovu fft-a')
+
+ZADATAK 18 - Dat je diskretni signal
+clear all
+close all
+%a)
+N=128;
+%beta se racuna na osnovu izraza
+beta=0.76609*(20-13.65).^0.4+0.09834*(20-13.26);
+n=0:N-1;
+x=sin((2pin)/14)+1.1cos((4pin)/15)-exp((5pin)/6);
+w=kaiser(N,beta)';
+y=x.w;
+Y=2abs(fft(y))/N;
+subplot(2,1,1);
+stem(n,Y);
+title('Kajzerova prozorska funkcija N=128’);
+%b)
+N=32;
+%beta se racuna na osnovu izraza
+beta=0.76609(20-13.65).^0.4+0.09834*(20-13.26);
+n=0:N-1;
+x=sin((2pin)/14)+1.1cos((4pin)/15)-exp((5pi*n)/6);
+w=kaiser(N,beta)';
+y=x.w;
+Y=2abs(fft(y))/N;
+subplot(2,1,2);
+stem(n,Y);
+title('Kajzerova prozorska funkcija N=32');
+
+ZADATAK 19 - Dat je diskretni signal koji je definisan jednačinom
+clear all
+close all
+A0=1;
+A1=0.57;
+fi=(3pi)/4;
+Fs=10000;
+N=64;
+n=(0:N-1);
+%a)
+aF0=(1/16)10000;
+aF1=(2/6)10000;
+af0=aF0/Fs;
+af1=aF1/Fs;
+%slucaj b)
+bF0=(2/14)10000;
+bF1=(1/15)10000;
+bf0=bF0/Fs;
+bf1=bF1/Fs;
+bx=A0exp(2pibf0n+fi)+A1exp(2pibf1n-fi);
+BX=abs(fft(bx));
+%slucaj c)
+cF0=(3/14)10000;
+cF1=(3/25)10000;
+cf0=cF0/Fs;
+cf1=cF1/Fs;
+cx=A0exp(2picf0n+fi)+A1exp(2picf1*n-fi);
+CX=abs(fft(cx));
+subplot(311);
+stem(AX(1:N/2));
+title('Amplitudni spektar a)');
+xlabel('n');
+ylabel('x[n]');
+axis tight;
+subplot(312);
+stem(BX(1:N/2));
+title('Amplitudni spektar b)');
+xlabel('n');
+ylabel('x[n]');
+axis tight;
+subplot(313);
+stem(CX(1:N/2));
+title('Amplitudni spektar c)');
+xlabel('n');
+ylabel('x[n]');
+axis tight;
+
+ZADATAK 2 - DRUGI NAČIN
+
+%% drugi rezervni
+h = [2 0 4 -1];
+u = [2 -1];
+impuls = [1 zeros(1,10)];
+pom = conv(h, impuls);
+hrez1 = conv(pom, u);
+hrez2 = conv(h, u);
+Nh = length(h);
+Nhrez1 = length(hrez1);
+Nhrez2 = length(hrez2);
+Nu = length(u);
+Npom = length(pom);
+nh = 0:Nh-1;
+nhrez1 = 0:Nhrez1-1;
+nhrez2 = 0:Nhrez2-1;
+nu = 0:Nu-1;
+
+subplot(231), stem(nh, h), title('impulsni odziv');
+subplot(232), stem(nu, u), title('pobuda');
+subplot(233), stem(nhrez1, hrez1), title('impulsni odziv na izlazu kaskade - serijska');
+subplot(234), stem(nhrez2, hrez2), title('impulsni odziv na izlazu kaskade veze dobijen na osnovu h[n]=h1[n]*h1[n]');
+
+h1 = [2 0 4 -1];
+impuls = [2 -1];
+pom = conv(h1, impuls);
+hrez1 = conv(pom, h1);
+hrez2 = conv(h1, h1);
+Nh1 = length(h1);
+Nhrez1 = length(hrez1);
+Nhrez2 = length(hrez2);
+Nimpuls = length(impuls);
+Npom = length(pom);
+nh1 = 0:Nh1-1;
+nhrez1 = 0:Nhrez1-1;
+nhrez2 = 0:Nhrez2-1;
+nimpuls = 0:Nimpuls-1;
+
+subplot(231), stem(nh1, h1), title('impulsni odziv');
+subplot(232), stem(nimpuls, impuls), title('pobuda');
+subplot(233), stem(nhrez1, hrez1), title('impulsni odziv na izlazu kaskade - serijska');
+subplot(234), stem(nhrez2, hrez2), title('impulsni odziv na izlazu kaskade veze dobijen na osnovu h[n]=h1[n]*h1[n]');
+
+pom1 = conv(h, impuls);
+pom2 = conv(u, impuls);
+
+% Zero-pad the shorter array
+max_length = max(length(pom1), length(pom2));
+pom1 = [pom1 zeros(1, max_length - length(pom1))];
+pom2 = [pom2 zeros(1, max_length - length(pom2))];
+
+hrez3 = pom1 + pom2;
+hp = h + h;
+hrez4 = conv(u, hp);
+Nhrez3 = length(hrez3);
+
+Nhrez4 = length(hrez4);
+nhrez3 = 0:Nhrez3-1;
+nhrez4 = 0:Nhrez4-1;
+
+subplot(235), stem(nhrez3, hrez3), title('impulsni odziv na izlazu kaskade - paralelna');
+subplot(236), stem(nhrez4, hrez4), title('impulsni odziv na izlazu kaskade veze dobijen na osnovu h[n]=h1[n]+h1[n]');
